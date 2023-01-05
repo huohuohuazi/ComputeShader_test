@@ -1,0 +1,26 @@
+
+#pragma kernel groupTest
+
+RWStructuredBuffer<int> outBuffer;
+
+groupshared int cached[32];
+[numthreads(32,1,1)]
+void groupTest(uint3 id : SV_DispatchThreadID,uint3 threadIDx : SV_GroupThreadID)
+{
+    // TODO: insert actual code here!
+    //Result[id.xy] = float4(id.x & id.y, (id.x & 15)/15.0, (id.y & 15)/15.0, 0.0);
+    uint index=id.x+id.y*32*2+id.z*32*2*1*1;
+    uint threadId=threadIDx.x;
+    
+    cached[threadId]=threadId;
+
+    //GroupMemoryBarrierWithGroupSync();
+
+    outBuffer[index]=cached[31-threadId];
+    if(index<16)
+    {
+        //outBuffer[index]=cached[31-index]+100;
+    }
+    
+    
+}
